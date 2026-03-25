@@ -3,3 +3,6 @@
 	url = https://github.com/noahostle/redacted-report
 [submodule "report"]
 	branch = main
+[submodule "redacted-report"]
+	path = redacted-report
+	url = https://github.com/noahostle/redacted-report/
