@@ -10,7 +10,6 @@
     title: document.getElementById("demo-title"),
     sentinelByte: document.getElementById("sentinel-byte"),
     maxBytes: document.getElementById("max-bytes"),
-    buildSummary: document.getElementById("build-summary"),
     signerSelect: document.getElementById("signer-select"),
     signerHint: document.getElementById("signer-hint"),
     newSignerLabel: document.getElementById("new-signer-label"),
@@ -55,35 +54,10 @@
   }
 
   function render() {
-    renderBuildSummary();
     renderSigners();
     renderMessages();
     renderWorkspace();
     renderProofs();
-  }
-
-  function renderBuildSummary() {
-    const info = state.data.build_info;
-    if (!info) {
-      elements.buildSummary.innerHTML = state.data.artifacts_ready
-        ? "<p>Artifacts are present, but no build telemetry has been recorded in this demo state yet.</p>"
-        : "<p>Artifacts are missing. Rebuild the circuit to compile, set up Groth16, and capture timings.</p>";
-      return;
-    }
-
-    const timings = info.timings || {};
-    elements.buildSummary.innerHTML = [
-      "<div class='timing-grid'>",
-      tile("Compile", timings.compile_ms),
-      tile("R1CS Info", timings.r1cs_info_ms),
-      tile("PoT", timings.ptau_ms),
-      tile("Setup", timings.groth16_setup_ms),
-      tile("ZKey", timings.zkey_contribute_ms),
-      tile("VKey", timings.export_vkey_ms),
-      tile("Total", timings.total_ms),
-      "</div>",
-      "<p class='subtle-text'>Constraints: <strong>" + formatNumber(info.constraints) + "</strong> &middot; Powers of Tau: <strong>2^" + info.ptau_power + "</strong></p>",
-    ].join("");
   }
 
   function renderSigners() {
@@ -229,6 +203,10 @@
   }
 
   async function rebuildCircuit() {
+    if (!window.confirm("Are you sure? this step is only necessary for circuit verification and can take a while...")) {
+      return;
+    }
+
     try {
       setStatus("Rebuilding circuit and Groth16 artifacts...");
       await apiPost("/api/build", {});

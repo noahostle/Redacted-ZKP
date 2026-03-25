@@ -317,6 +317,15 @@ input:focus {
   color: var(--accent-deep);
 }
 
+.bottom-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-top: 1rem;
+  padding: 0.25rem 0.35rem 0;
+}
+
 .status-strip {
   position: sticky;
   bottom: 0.9rem;
@@ -355,7 +364,8 @@ input:focus {
   }
 
   .panel-header,
-  .card-row {
+  .card-row,
+  .bottom-actions {
     flex-direction: column;
     align-items: stretch;
   }

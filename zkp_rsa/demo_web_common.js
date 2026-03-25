@@ -13,8 +13,19 @@ function startDemo(config) {
   ensureDirs(ctx);
 
   const server = http.createServer(function (req, res) {
+    const started = process.hrtime.bigint();
+    logRequestStart(req);
+    res.on("finish", function () {
+      const ms = Number(process.hrtime.bigint() - started) / 1000000;
+      logRequestFinish(req, res, ms);
+    });
+
     routeRequest(ctx, req, res).catch(function (err) {
-      sendJson(res, 500, { error: err.message });
+      console.error("[http] !! " + req.method + " " + req.url);
+      console.error(err && err.stack ? err.stack : String(err));
+      if (!res.headersSent) {
+        sendJson(res, 500, { error: err.message });
+      }
     });
   });
 
@@ -131,6 +142,31 @@ async function routeRequest(ctx, req, res) {
   }
 
   sendJson(res, 404, { error: "Not found" });
+}
+
+function logRequestStart(req) {
+  console.log("[http] --> " + req.method + " " + req.url);
+}
+
+function logRequestFinish(req, res, ms) {
+  console.log("[http] <-- " + req.method + " " + req.url + " " + res.statusCode + " " + Math.round(ms) + "ms");
+}
+
+function logRequestBody(req, body) {
+  console.log("[http] body " + req.method + " " + req.url);
+  console.log(formatLogValue(body));
+}
+
+function formatLogValue(value) {
+  if (typeof value === "string") {
+    return value;
+  }
+
+  try {
+    return JSON.stringify(value, null, 2);
+  } catch (err) {
+    return String(value);
+  }
 }
 
 async function getState(ctx) {
@@ -677,23 +713,31 @@ function commandWorks(ctx, command) {
 }
 
 function timedCommand(ctx, command) {
-  const started = process.hrtime.bigint();
   const result = runShell(ctx, command, ctx.rootDir);
-  const ms = Number(process.hrtime.bigint() - started) / 1000000;
   return {
-    ms: Math.round(ms),
+    ms: result.ms,
     stdout: result.stdout,
     stderr: result.stderr,
   };
 }
 
 function runShell(ctx, command, cwd) {
+  const effectiveCwd = cwd || ctx.rootDir;
+  console.log("[cmd] --> (" + effectiveCwd + ") " + command);
+  const started = process.hrtime.bigint();
   const result = spawnSync("bash", ["-lc", command], {
-    cwd: cwd || ctx.rootDir,
+    cwd: effectiveCwd,
     encoding: "utf8",
     timeout: 0,
     maxBuffer: 1024 * 1024 * 64,
   });
+  const ms = Math.round(Number(process.hrtime.bigint() - started) / 1000000);
+
+  console.log("[cmd] <-- exit " + String(result.status) + " in " + ms + "ms");
+  console.log("[cmd][stdout]");
+  console.log(result.stdout ? result.stdout.trimEnd() : "<empty>");
+  console.log("[cmd][stderr]");
+  console.log(result.stderr ? result.stderr.trimEnd() : "<empty>");
 
   if (result.status !== 0) {
     throw new Error(buildCommandError(command, result));
@@ -702,6 +746,7 @@ function runShell(ctx, command, cwd) {
   return {
     stdout: result.stdout || "",
     stderr: result.stderr || "",
+    ms: ms,
   };
 }
 
@@ -1156,12 +1201,17 @@ function readJsonBody(req) {
 
     req.on("end", function () {
       if (!body) {
+        logRequestBody(req, {});
         resolve({});
         return;
       }
       try {
-        resolve(JSON.parse(body));
+        const parsed = JSON.parse(body);
+        logRequestBody(req, parsed);
+        resolve(parsed);
       } catch (err) {
+        console.error("[http] !! invalid JSON " + req.method + " " + req.url);
+        console.error(body);
         reject(new Error("Invalid JSON body."));
       }
     });

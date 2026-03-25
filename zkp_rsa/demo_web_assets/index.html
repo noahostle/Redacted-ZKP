@@ -29,17 +29,6 @@
     </header>
 
     <main class="dashboard">
-      <section class="panel panel-wide">
-        <div class="panel-header">
-          <div>
-            <p class="panel-kicker">Circuit</p>
-            <h2>Build & Timing</h2>
-          </div>
-          <button id="rebuild-button" class="button button-primary">Rebuild Circuit</button>
-        </div>
-        <div id="build-summary" class="panel-body muted-card"></div>
-      </section>
-
       <section class="panel">
         <div class="panel-header">
           <div>
@@ -121,6 +110,14 @@
         <div id="proofs-list" class="stack-list"></div>
       </section>
     </main>
+
+    <div class="bottom-actions">
+      <div>
+        <p class="panel-kicker">Circuit Maintenance</p>
+        <p class="subtle-text">Only needed if you want to regenerate the circuit artifacts for verification from source.</p>
+      </div>
+      <button id="rebuild-button" class="button button-ghost">Rebuild Circuit</button>
+    </div>
 
     <footer class="status-strip">
       <strong>Status</strong>
