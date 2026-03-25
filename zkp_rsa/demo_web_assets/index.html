@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Redacted ZKP Demo</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <div class="page-shell">
+    <header class="hero">
+      <div class="hero-copy">
+        <p class="eyebrow">Zero-Knowledge Redaction Studio</p>
+        <h1 id="demo-title">Redacted Signature Demo</h1>
+        <p class="hero-text">
+          Sign a message, redact multiple spans by selecting text, and produce a proof that the visible message came from a validly signed original without leaking the hidden segment lengths, or exposing the hash of the original message.
+        </p>
+      </div>
+      <div class="hero-panel">
+        <div class="stat-card">
+          <span class="stat-label">Sentinel Byte</span>
+          <strong id="sentinel-byte">0x01</strong>
+        </div>
+        <div class="stat-card">
+          <span class="stat-label">Max Message Size</span>
+          <strong id="max-bytes">256 bytes</strong>
+        </div>
+      </div>
+    </header>
+
+    <main class="dashboard">
+      <section class="panel panel-wide">
+        <div class="panel-header">
+          <div>
+            <p class="panel-kicker">Circuit</p>
+            <h2>Build & Timing</h2>
+          </div>
+          <button id="rebuild-button" class="button button-primary">Rebuild Circuit</button>
+        </div>
+        <div id="build-summary" class="panel-body muted-card"></div>
+      </section>
+
+      <section class="panel">
+        <div class="panel-header">
+          <div>
+            <p class="panel-kicker">Signers</p>
+            <h2>Key Management</h2>
+          </div>
+        </div>
+        <div class="field-row">
+          <label for="signer-select">Use signer</label>
+          <select id="signer-select"></select>
+        </div>
+        <div class="field-row split">
+          <input id="new-signer-label" type="text" placeholder="ALICE">
+          <button id="create-signer-button" class="button">Create Signer</button>
+        </div>
+        <div id="signer-hint" class="subtle-text"></div>
+      </section>
+
+      <section class="panel">
+        <div class="panel-header">
+          <div>
+            <p class="panel-kicker">Messages</p>
+            <h2>Compose & Sign</h2>
+          </div>
+        </div>
+        <label for="message-input">Full message</label>
+        <textarea id="message-input" rows="6" placeholder="Type the full signed message here..."></textarea>
+        <div class="toolbar">
+          <button id="sign-message-button" class="button button-primary">Sign Message</button>
+          <span class="subtle-text">UTF-8 text is limited to 256 bytes</span>
+        </div>
+        <div id="messages-list" class="stack-list"></div>
+      </section>
+
+      <section class="panel panel-wide">
+        <div class="panel-header">
+          <div>
+            <p class="panel-kicker">Proof Workspace</p>
+            <h2>Selection-Based Redaction</h2>
+          </div>
+          <button id="generate-proof-button" class="button button-primary">Generate Proof</button>
+        </div>
+
+        <div class="workspace-grid">
+          <div class="workspace-column">
+            <label for="redaction-source">Source text</label>
+            <textarea id="redaction-source" rows="10" readonly placeholder="Choose a signed message to start redacting."></textarea>
+            <div class="toolbar">
+              <button id="redact-selection-button" class="button">Redact Selection</button>
+              <button id="undo-redaction-button" class="button button-ghost">Undo Last</button>
+              <button id="clear-redactions-button" class="button button-ghost">Clear All</button>
+            </div>
+            <div id="redaction-ranges" class="chip-row"></div>
+          </div>
+
+          <div class="workspace-column">
+            <div class="preview-card">
+              <p class="panel-kicker">Public Preview</p>
+              <div id="masked-display-preview" class="preview-text empty-state">No message selected.</div>
+            </div>
+            <div class="preview-card">
+              <p class="panel-kicker">Control-Byte Preview</p>
+              <code id="masked-control-preview" class="mono-block">Select text and press “Redact Selection”.</code>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel panel-wide">
+        <div class="panel-header">
+          <div>
+            <p class="panel-kicker">Proofs</p>
+            <h2>Verification & Export</h2>
+          </div>
+          <div class="toolbar">
+            <button id="reset-state-button" class="button button-ghost">Reset Demo State</button>
+          </div>
+        </div>
+        <div id="proofs-list" class="stack-list"></div>
+      </section>
+    </main>
+
+    <footer class="status-strip">
+      <strong>Status</strong>
+      <span id="status-text">Loading demo state...</span>
+    </footer>
+  </div>
+
+  <script src="/app.js"></script>
+</body>
+</html>

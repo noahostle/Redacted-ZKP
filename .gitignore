@@ -1,0 +1,18 @@
+*/node_modules/
+
+*/demo_state*/
+*/public/
+
+zkp_ecdsa/
+
+# Keep final proving artifacts; ignore temporary setup/output files.
+*/build*/demo_work/
+*/build*/work/
+*/build*/*.ptau
+*/build*/circuit_0000.zkey
+*/build*/zk_attest_0000.zkey
+*/build*/*.wtns
+*/build*/*.sym
+*/build*/proof.json
+*/build*/public.json
+*/build*/input.json

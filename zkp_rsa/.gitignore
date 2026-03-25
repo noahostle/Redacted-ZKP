@@ -1,0 +1,15 @@
+node_modules/
+
+demo_state*/
+public/
+
+# Temporary setup/proving outputs.
+build/demo_work/
+build/work/
+build/*.ptau
+build/circuit_0000.zkey
+build/*.wtns
+build/*.sym
+build/proof.json
+build/public.json
+build/input.json
