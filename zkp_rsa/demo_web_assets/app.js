@@ -198,7 +198,7 @@
       if (action === "select-message") {
         state.selectedMessageFile = file;
         state.ranges = [];
-        renderWorkspace();
+        render();
         setStatus("Loaded signed message into the redaction workspace.");
         return;
       }
@@ -265,7 +265,7 @@
       await refreshState();
       state.selectedMessageFile = response.message.file;
       state.ranges = [];
-      renderWorkspace();
+      render();
       setStatus("Signed message saved and loaded into the workspace.");
     } catch (error) {
       handleError(error);
