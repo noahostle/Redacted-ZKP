@@ -215,6 +215,31 @@ input:focus {
   line-height: 1.45;
 }
 
+.signer-details {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  padding-top: 0.1rem;
+}
+
+.signer-detail-line {
+  font-size: 1.02rem;
+  line-height: 1.6;
+}
+
+.signer-detail-label {
+  color: var(--ink);
+  font-weight: 600;
+}
+
+.signer-detail-value {
+  color: var(--ink-soft);
+}
+
+.signer-detail-value-modulus {
+  word-break: break-all;
+}
+
 .workspace-grid {
   display: grid;
   grid-template-columns: 1.3fr 1fr;

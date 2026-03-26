@@ -172,11 +172,7 @@ function formatLogValue(value) {
 async function getState(ctx) {
   const signers = listJsonFiles(ctx.keyDir).map(function (file) {
     const record = readJson(path.join(ctx.keyDir, file));
-    return {
-      file: file,
-      label: record.label,
-      public_summary: record.public_summary || "",
-    };
+    return summarizeSigner(file, record);
   });
 
   const messages = listJsonFiles(ctx.messageDir).map(function (file) {
@@ -210,6 +206,18 @@ async function getState(ctx) {
   };
 }
 
+function summarizeSigner(file, record) {
+  return {
+    file: file,
+    label: record.label,
+    public_summary: record.public_summary || "",
+    signature_scheme: formatSignatureScheme(record.scheme),
+    keypair_type: buildKeypairType(record),
+    public_exponent: readPublicExponent(record),
+    modulus_hex: record.modulus_hex || "",
+  };
+}
+
 function summarizeMessage(file, record) {
   return {
     file: file,
@@ -239,6 +247,41 @@ function summarizeProof(file, record) {
 
 function sortByNewest(a, b) {
   return (b.created_at || 0) - (a.created_at || 0);
+}
+
+function formatSignatureScheme(scheme) {
+  if (scheme === "RSA_PKCS1v15_SHA256") {
+    return "RSA PKCS#1 v1.5";
+  }
+
+  if (!scheme) {
+    return "";
+  }
+
+  return String(scheme).replace(/_/g, " ");
+}
+
+function buildKeypairType(record) {
+  if (record && record.modulus_bits) {
+    return "RSA-" + String(record.modulus_bits);
+  }
+  return "";
+}
+
+function readPublicExponent(record) {
+  if (record && record.publicExponent !== undefined && record.publicExponent !== null) {
+    return String(record.publicExponent);
+  }
+
+  if (record && Array.isArray(record.exp) && record.exp.length > 0) {
+    let value = 0n;
+    for (let i = record.exp.length - 1; i >= 0; i--) {
+      value = (value << 64n) + BigInt(record.exp[i] || 0);
+    }
+    return value.toString();
+  }
+
+  return "";
 }
 
 function buildSignaturePreview(record) {
@@ -290,11 +333,7 @@ async function createSigner(ctx, body) {
 
   return {
     ok: true,
-    signer: {
-      file: chosenLabel + ".json",
-      label: chosenLabel,
-      public_summary: record.public_summary || "",
-    },
+    signer: summarizeSigner(chosenLabel + ".json", record),
   };
 }
 

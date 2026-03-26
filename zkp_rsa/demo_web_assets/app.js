@@ -62,17 +62,34 @@
 
   function renderSigners() {
     const signers = state.data.signers || [];
+    const previousSelection = elements.signerSelect.value;
     const options = ["<option value=''>Select a signer...</option>"];
     signers.forEach(function (signer) {
       options.push("<option value='" + escapeAttr(signer.label) + "'>" + escapeHtml(signer.label) + "</option>");
     });
     elements.signerSelect.innerHTML = options.join("");
+    if (findSigner(previousSelection)) {
+      elements.signerSelect.value = previousSelection;
+    }
     renderSignerHint();
   }
 
   function renderSignerHint() {
     const selected = findSigner(elements.signerSelect.value);
-    elements.signerHint.textContent = selected ? selected.public_summary : "Create or choose a signer to sign a message.";
+    if (!selected) {
+      elements.signerHint.classList.add("empty-state");
+      elements.signerHint.textContent = "Create or choose a signer to sign a message.";
+      return;
+    }
+
+    elements.signerHint.classList.remove("empty-state");
+    elements.signerHint.innerHTML = [
+      signerDetailLine("Selected Signer", selected.label || "Unavailable"),
+      signerDetailLine("Signature Scheme", selected.signature_scheme || "Unavailable"),
+      signerDetailLine("Keypair type", selected.keypair_type || "Unavailable"),
+      signerDetailLine("e", selected.public_exponent || "Unavailable"),
+      signerDetailLine("Public Modulus n", selected.modulus_hex || "Unavailable", " signer-detail-value-modulus"),
+    ].join("");
   }
 
   function renderMessages() {
@@ -404,6 +421,15 @@
     return (state.data.signers || []).find(function (signer) {
       return signer.label === label;
     }) || null;
+  }
+
+  function signerDetailLine(label, value, extraValueClass) {
+    return [
+      "<div class='signer-detail-line'>",
+      "<span class='signer-detail-label'>" + escapeHtml(label) + ":</span> ",
+      "<span class='signer-detail-value" + (extraValueClass || "") + "'>" + escapeHtml(value) + "</span>",
+      "</div>",
+    ].join("");
   }
 
   function tile(label, value) {
