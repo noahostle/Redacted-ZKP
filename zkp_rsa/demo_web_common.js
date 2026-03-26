@@ -227,6 +227,7 @@ function summarizeMessage(file, record) {
     msg_text_utf8: record.msg_text_utf8,
     msg_len: record.msg_len,
     signature_preview: buildSignaturePreview(record),
+    signature_full: buildFullSignature(record),
     public_summary: record.public_summary || "",
   };
 }
@@ -295,6 +296,22 @@ function buildSignaturePreview(record) {
 
   if (record && Array.isArray(record.sign) && record.sign.length > 0) {
     return previewHex(limbs64LEToHex(record.sign));
+  }
+
+  return "";
+}
+
+function buildFullSignature(record) {
+  if (record && record.sig) {
+    return [
+      "R8x " + String(record.sig.R8x || ""),
+      "R8y " + String(record.sig.R8y || ""),
+      "S " + String(record.sig.S || ""),
+    ].join("\n");
+  }
+
+  if (record && Array.isArray(record.sign) && record.sign.length > 0) {
+    return limbs64LEToHex(record.sign);
   }
 
   return "";

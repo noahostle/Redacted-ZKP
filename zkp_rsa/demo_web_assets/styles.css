@@ -243,13 +243,51 @@ input:focus {
 .workspace-grid {
   display: grid;
   grid-template-columns: 1.3fr 1fr;
+  grid-template-areas:
+    "source extra"
+    "public control";
   gap: 1rem;
+  align-items: stretch;
 }
 
-.workspace-column {
+.workspace-source-panel {
+  grid-area: source;
   display: flex;
   flex-direction: column;
   gap: 0.85rem;
+  min-height: 0;
+}
+
+.workspace-extra-panel {
+  grid-area: extra;
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  min-height: 0;
+}
+
+.workspace-card {
+  min-height: 0;
+}
+
+.workspace-card-control {
+  grid-area: control;
+  display: flex;
+  flex-direction: column;
+}
+
+.workspace-card-public {
+  grid-area: public;
+}
+
+.workspace-card-signature {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+}
+
+.workspace-ranges {
+  margin-top: 0.85rem;
 }
 
 .preview-text {
@@ -268,6 +306,19 @@ input:focus {
   color: #433b35;
   white-space: pre-wrap;
   word-break: break-word;
+}
+
+.workspace-card-control .mono-block,
+.workspace-card-signature .mono-block {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+}
+
+.signature-block {
+  min-height: 0;
+  font-size: 0.8rem;
+  line-height: 1.55;
 }
 
 .redaction-chip {
@@ -386,6 +437,14 @@ input:focus {
   .dashboard,
   .workspace-grid {
     grid-template-columns: 1fr;
+  }
+
+  .workspace-grid {
+    grid-template-areas:
+      "source"
+      "public"
+      "extra"
+      "control";
   }
 
   .panel-header,

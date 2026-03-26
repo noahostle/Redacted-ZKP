@@ -19,6 +19,7 @@
     redactionRanges: document.getElementById("redaction-ranges"),
     maskedDisplayPreview: document.getElementById("masked-display-preview"),
     maskedControlPreview: document.getElementById("masked-control-preview"),
+    selectedSignaturePreview: document.getElementById("selected-signature-preview"),
     proofsList: document.getElementById("proofs-list"),
     statusText: document.getElementById("status-text"),
   };
@@ -128,6 +129,7 @@
       elements.maskedDisplayPreview.innerHTML = "No message selected.";
       elements.maskedDisplayPreview.classList.add("empty-state");
       elements.maskedControlPreview.textContent = "Select text and press “Redact Selection”.";
+      elements.selectedSignaturePreview.textContent = "Choose a signed message to inspect its full signature.";
       elements.redactionRanges.innerHTML = "";
       return;
     }
@@ -137,6 +139,7 @@
     elements.maskedDisplayPreview.classList.remove("empty-state");
     elements.maskedDisplayPreview.innerHTML = preview.displayHtml;
     elements.maskedControlPreview.textContent = preview.controlText || "(empty)";
+    elements.selectedSignaturePreview.textContent = message.signature_full || "Unavailable";
     elements.redactionRanges.innerHTML = state.ranges.length === 0
       ? "<span class='subtle-text'>No redactions yet. Highlight text in the source field and press “Redact Selection”.</span>"
       : state.ranges.map(function (range, index) {

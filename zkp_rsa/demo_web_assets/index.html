@@ -73,7 +73,7 @@
         </div>
 
         <div class="workspace-grid">
-          <div class="workspace-column">
+          <div class="workspace-source-panel">
             <label for="redaction-source">Source text</label>
             <textarea id="redaction-source" rows="10" readonly placeholder="Choose a signed message to start redacting."></textarea>
             <div class="toolbar">
@@ -81,20 +81,28 @@
               <button id="undo-redaction-button" class="button button-ghost">Undo Last</button>
               <button id="clear-redactions-button" class="button button-ghost">Clear All</button>
             </div>
-            <div id="redaction-ranges" class="chip-row"></div>
           </div>
 
-          <div class="workspace-column">
-            <div class="preview-card">
-              <p class="panel-kicker">Public Preview</p>
-              <div id="masked-display-preview" class="preview-text empty-state">No message selected.</div>
-            </div>
-            <div class="preview-card">
-              <p class="panel-kicker">Control-Byte Preview</p>
-              <code id="masked-control-preview" class="mono-block">Select text and press “Redact Selection”.</code>
+          <div class="workspace-extra-panel">
+            <label>Extra info</label>
+            <div class="preview-card workspace-card workspace-card-signature">
+              <p class="panel-kicker">Full Signature</p>
+              <code id="selected-signature-preview" class="mono-block signature-block">Choose a signed message to inspect its full signature.</code>
             </div>
           </div>
+
+          <div class="preview-card workspace-card workspace-card-public">
+            <p class="panel-kicker">Public Preview</p>
+            <div id="masked-display-preview" class="preview-text empty-state">No message selected.</div>
+          </div>
+
+          <div class="preview-card workspace-card workspace-card-control">
+            <p class="panel-kicker">Control-Byte Preview</p>
+            <code id="masked-control-preview" class="mono-block">Select text and press “Redact Selection”.</code>
+          </div>
         </div>
+
+        <div id="redaction-ranges" class="chip-row workspace-ranges"></div>
       </section>
 
       <section class="panel panel-wide">
