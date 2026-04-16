@@ -18,7 +18,7 @@ Edit the redacted-report repo separately and commit your changes separately.
 Then, set the 'Report' submodule to point to the most recent redacted-report commit by doing in the redacted-zkp directory;
 
 cd Report
-git pull
+git pull (or git submodule update --init)
 
 cd ..
 git add Report
